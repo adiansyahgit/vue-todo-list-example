@@ -10,6 +10,7 @@
                     <Tasks :tasks="uncompletedTask" 
                         @updated="handleUpdatedTask" 
                         @completed="handleCompletedTask" 
+                        @removed="handleRemovedTask"
                     />
 
                     <div class="text-center my-3" v-show="showToggleCompletedBtn">
@@ -22,8 +23,9 @@
                     <!-- List of completed tasks -->
                     <Tasks :tasks="completedTask" 
                         :show="completedTaskIsVisible && showCompletedTasks" 
-                        @updated="$emit('updated', $event)"
-                        @completed="$emit('completed', $event)"
+                        @updated="handleUpdatedTask" 
+                        @completed="handleCompletedTask" 
+                        @removed="handleRemovedTask"
                     />
                 </div>
             </div>
@@ -33,7 +35,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from "vue"
-import { allTasks, createTask, updateTask, completeTask } from "../http/task-api"
+import { allTasks, createTask, updateTask, completeTask, deleteTask } from "../http/task-api"
 import Tasks from "../components/tasks/Tasks.vue";
 import NewTask from "../components/tasks/NewTask.vue";
 
@@ -69,5 +71,12 @@ const handleCompletedTask = async (task) => {
     })
     const currentTask = tasks.value.find(item => item.id == task.id)
     currentTask.is_complete = updatedTask.data.is_complete
+}
+
+const handleRemovedTask = async (task) => {
+    await deleteTask(task.id)
+    const index = tasks.value.findIndex(item => item.id == task.id)
+    console.log(index)
+    tasks.value.splice(index, 1)
 }
 </script>
