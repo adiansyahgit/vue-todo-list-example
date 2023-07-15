@@ -42,7 +42,7 @@ import Tasks from "../components/tasks/Tasks.vue";
 import NewTask from "../components/tasks/NewTask.vue";
 
 const store = useTaskStore();
-const { task } = storeToRefs(store)
+const { completedTask, uncompletedTask } = storeToRefs(store)
 const tasks = ref([])
 
 onMounted(async () => {
@@ -50,8 +50,8 @@ onMounted(async () => {
     tasks.value = data.data
 })
 
-const uncompletedTask = computed(() => tasks.value.filter(task => !task.is_complete))
-const completedTask = computed(() => tasks.value.filter(task => task.is_complete))
+// const uncompletedTask = computed(() => tasks.value.filter(task => !task.is_complete))
+// const completedTask = computed(() => tasks.value.filter(task => task.is_complete))
 const showToggleCompletedBtn = computed(() => uncompletedTask.value.length > 0 && completedTask.value.length > 0)
 const completedTaskIsVisible = computed(() => uncompletedTask.value.length == 0 || completedTask.value.length > 0)
 const showCompletedTasks = ref(false)
