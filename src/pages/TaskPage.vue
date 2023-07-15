@@ -35,10 +35,14 @@
 
 <script setup>
 import { computed, onMounted, ref } from "vue"
+import { storeToRefs } from "pinia";
+import { useTaskStore } from "../stores/task";
 import { allTasks, createTask, updateTask, completeTask, deleteTask } from "../http/task-api"
 import Tasks from "../components/tasks/Tasks.vue";
 import NewTask from "../components/tasks/NewTask.vue";
 
+const store = useTaskStore();
+const { task } = storeToRefs(store)
 const tasks = ref([])
 
 onMounted(async () => {
