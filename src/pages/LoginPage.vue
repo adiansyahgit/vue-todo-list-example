@@ -1,6 +1,6 @@
 <template>
     <main class="auth-wrapper">
-        <form class="auth-form">
+        <form class="auth-form" @submit.prevent="handleSubmit">
             <h1>
                 <span>ToeDoe</span>
                 <strong>List</strong>
@@ -22,13 +22,21 @@
 
 <script setup>
 import { reactive } from "vue";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
-const router = useRoute()
+const router = useRouter()
+const store = useAuthStore()
+
 const form = reactive({
     email: '',
     password: '',
 })
+
+const handleSubmit = async () => {
+    await store.handleLogin(form)
+    router.push({ name: 'tasks' })
+}
 </script>
 
 <style scoped>
