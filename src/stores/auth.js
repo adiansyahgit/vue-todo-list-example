@@ -4,6 +4,7 @@ import { login, logout, register, getUser } from "../http/auth-api";
 
 export const useAuthStore = defineStore('authStore', () => {
     const user = ref(null)
+    const errors = ref({})
 
     const isLoggedIn = computed(() => !!user.value)
 
@@ -17,9 +18,16 @@ export const useAuthStore = defineStore('authStore', () => {
     }
 
     const handleLogin = async (credentials) => {
-        const { data } = await login(credentials)
-        user.value = data.user
-        localStorage.setItem('token', data.token)
+        try {
+            const { data } = await login(credentials)
+            user.value = data.user
+            localStorage.setItem('token', data.token)
+            errors.value = {}
+        } catch (error) {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors
+            }
+        }
     }
 
     const handleRegister = async (newUser) => {
@@ -36,6 +44,7 @@ export const useAuthStore = defineStore('authStore', () => {
 
     return {
         user,
+        errors,
         isLoggedIn,
         fetchUser,
         handleLogin,
