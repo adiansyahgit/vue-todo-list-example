@@ -23,17 +23,15 @@ export const useAuthStore = defineStore('authStore', () => {
     }
 
     const handleRegister = async (newUser) => {
-        await register(newUser)
-        await login({
-            email: newUser.email,
-            password: newUser.password,
-        })
-        await fetchUser()
+        const { data } = await register(newUser)
+        user.value = data.user
+        localStorage.setItem('token', data.token)
     }
 
     const handleLogout = async () => {
         await logout()
         user.value = null
+        localStorage.removeItem('token')
     }
 
     return {
