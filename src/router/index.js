@@ -8,8 +8,10 @@ const router = createRouter({
     linkActiveClass: 'active'
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
     const store = useAuthStore()
+    await store.fetchUser()
+
     if (to.meta.auth && !store.isLoggedIn) {
         return {
             name: 'login',
