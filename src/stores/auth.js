@@ -31,9 +31,16 @@ export const useAuthStore = defineStore('authStore', () => {
     }
 
     const handleRegister = async (newUser) => {
-        const { data } = await register(newUser)
-        user.value = data.user
-        localStorage.setItem('token', data.token)
+        try {
+            const { data } = await register(newUser)
+            user.value = data.user
+            localStorage.setItem('token', data.token)
+            errors.value = {}
+        } catch (error) {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors
+            }
+        }
     }
 
     const handleLogout = async () => {
